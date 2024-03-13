@@ -4,6 +4,9 @@ const cors = require('cors')
 const morgan = require('morgan')
 const quizRouter = require('./routers/quiz')
 const userRouter = require('./routers/user')
+const personRouter = require('./routers/persom')
+const loginRouter = require('./routers/login')
+
 
 const app = express() // Creates an express application in app
 
@@ -19,6 +22,8 @@ app.use(morgan('dev'))
 
 app.use('/', quizRouter)
 app.use('/', userRouter)
+app.use('/', personRouter)
+app.use('/', loginRouter)
 
 const server = app.listen(process.env.PORT, () => {
     console.log(`Server running on port: ${process.env.PORT}`)
