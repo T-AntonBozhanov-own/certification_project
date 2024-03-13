@@ -2,6 +2,8 @@ const dotenv = require("dotenv").config()
 const express = require('express')  // We import the express application
 const cors = require('cors')
 const morgan = require('morgan')
+const quizRouter = require('./routers/quiz')
+const userRouter = require('./routers/user')
 
 const app = express() // Creates an express application in app
 
@@ -14,6 +16,9 @@ app.use(cors())
 app.use(express.json())
 
 app.use(morgan('dev'))
+
+app.use('/', quizRouter)
+app.use('/', userRouter)
 
 const server = app.listen(process.env.PORT, () => {
     console.log(`Server running on port: ${process.env.PORT}`)

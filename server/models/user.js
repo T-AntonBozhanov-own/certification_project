@@ -3,7 +3,10 @@ const mongoose = require('mongoose')
 const userSchema = mongoose.Schema({
     name: String,
     completedQuizes: [{
-      quizName: String,
+      quizId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Quiz'
+      },
       quizScore: Number
     }],
 })
