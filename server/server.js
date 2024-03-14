@@ -4,8 +4,10 @@ const cors = require('cors')
 const morgan = require('morgan')
 const quizRouter = require('./routers/quiz')
 const userRouter = require('./routers/user')
-const personRouter = require('./routers/persom')
+const personRouter = require('./routers/person')
 const loginRouter = require('./routers/login')
+const session = require('express-session')
+const {makeConnection} = require('./config/mongodb')
 
 
 const app = express() // Creates an express application in app
@@ -19,6 +21,16 @@ app.use(cors())
 app.use(express.json())
 
 app.use(morgan('dev'))
+app.use(session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 6000000, secure: true }
+  }))
+  
+//Make db connections
+makeConnection()
+  
 
 app.use('/', quizRouter)
 app.use('/', userRouter)

@@ -4,6 +4,7 @@ const {HTTP_CODE} = require("../constants/httpCodes");
 const { PERSON_PATH } = require('./constants')
 
 const Person = require('../models/person')
+const User = require('../models/user')
 
 /**
  * @receives a get request to the URL: http://localhost:3001/api/quiz
@@ -46,20 +47,28 @@ personRouter.post(`${PERSON_PATH}`, async (request, response) => {
             return response.status(HTTP_CODE.BAD_REQUEST).send({ error: 'content missing'})
         }
 
-        const duplicateCount = Person.countDocuments({username: content.username}).exec()
+        const duplicateCount = await Person.countDocuments({username: content.username}).exec()
         if(duplicateCount !== 0) {
             return response.status(HTTP_CODE.BAD_REQUEST).send({ error: 'User with this username already exist'})
         }
 
         const passwordHash = await bcrypt.hash(content.password, 10)
 
+        const user = new User({
+            name: content.username,
+            completedQuizes: [],
+        })
+
+        await user.save()
+
         const person = new Person({
             username: content.username,
-            passwordHash
+            passwordHash,
+            user
         })
 
         const personResponse = await person.save()
-        response.status(HTTP_CODE.CREATED).send(personResponse)
+        response.status(HTTP_CODE.CREATED).send({})
     } catch (e) {
         response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found' })
     }

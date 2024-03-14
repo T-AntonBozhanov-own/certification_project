@@ -9,6 +9,8 @@ import {
  * Importing other components
  */
 import {HomePage} from './components/HomePage'
+import {LoginPage} from './components/LoginPage'
+
 import About from './components/About'
 
 const App = () => {
@@ -16,6 +18,8 @@ const App = () => {
     <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<HomePage />} />
           <Route path="/about" element={<About />} />
         </Routes>
     </Router>

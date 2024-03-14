@@ -3,7 +3,8 @@ const loginRouter = require('express').Router()
 const {HTTP_CODE} = require("../constants/httpCodes");
 const { LOGIN_PATH } = require('./constants')
 
-const Person = require('../models/person')
+const Person = require('../models/person');
+const User = require('../models/user');
 
 
 loginRouter.post(`${LOGIN_PATH}`, async (request, response) => {
@@ -14,22 +15,29 @@ loginRouter.post(`${LOGIN_PATH}`, async (request, response) => {
             return response.status(HTTP_CODE.BAD_REQUEST).send({ error: 'content missing'})
         }
 
-        const person = Person.findOne({username})
+        const person = await Person.findOne({username})
 
         const passordCorrect = person === null ? false : 
             await bcrypt.compare(password, person.passwordHash)
 
+        request.session.user = { username }   
+
         if(!passordCorrect) {
             response.status(HTTP_CODE.UNAUTHORIZED).json({
-                error: 'Invalid username or password'
+                error: "Invalid username or password"
             })
         }  
 
-        
-        response.status(HTTP_CODE.SUCCESS).send(person)
+        const loggedInUser = await User.findById(person.user)
+        console.log('request', request.session)
+    
+        response.status(HTTP_CODE.SUCCESS).json({
+            name: loggedInUser.name,
+            completedQuizes: loggedInUser.completedQuizes
+        })
     } catch (e) {
         response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found' })
     }
 })
 
-module.exports = personRouter
+module.exports = loginRouter
