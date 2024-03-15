@@ -21,20 +21,18 @@ loginRouter.post(`${LOGIN_PATH}`, async (request, response) => {
         const passordCorrect = person === null ? false : 
             await bcrypt.compare(password, person.passwordHash)
 
-        request.session.user = { username }   
-
         if(!passordCorrect) {
             response.status(HTTP_CODE.UNAUTHORIZED).json({
                 error: "Invalid username or password"
             })
-        }  
-
+        } else { 
+        request.session.user = { username }   
         const loggedInUser = await User.findById(person.user)
     
         response.status(HTTP_CODE.SUCCESS).json({
             name: loggedInUser.name,
             completedQuizes: loggedInUser.completedQuizes
-        })
+        })}
     } catch (e) {
         response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found' })
     }
