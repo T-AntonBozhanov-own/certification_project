@@ -1,15 +1,17 @@
 import style from './header.module.css' 
 import MainLogo from '../../assets/logo.png'
+import { useSelector } from 'react-redux' 
 
-export const Header = () => (
-    <div className={style.container}>
+export const Header = () => {
+    const {data: {name}} = useSelector((state) => state.user)
+
+   return (<div className={style.container}>
         <div className={style.logo}>
             <img src={MainLogo} alt="Logo"/>
         </div>
-        <div className={style.actions}>
-            <button className={style.login_btn}>Login</button>
-            <button className={style.sign_in_btn}>SignUp</button>
+        <div className={style.username}>
+            {`Hello ${name}`}
         </div>
-    </div>
-)
+    </div>)
+}
 

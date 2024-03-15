@@ -8,20 +8,20 @@ import { useEffect } from "react"
 import {getQuizes} from '../../reducers/quizReducer'
 
 export const HomePage = () => {
-    const user = useSelector((state) => state.user);
+    const quiz = useSelector((state) => state.quiz);
     const dispatch = useDispatch()
 
     useEffect(() => {
         dispatch(getQuizes())
     }, [])
+    const questionsLength = quiz?.data?.[0]?.questions?.length ?? 0
   
-    return user.isLoggedIn ? 
-        <div className={style.container}>
-            <Header/>
-            <div className={style.content}>
-                <Question question={'question'} title={'9/10'}/>
-                <Options />
-            </div> 
-        </div> : <Navigate to="/login" replace />;
+    return (<div className={style.container}>
+                <Header/>
+                <div className={style.content}>
+                    <Question question={'question'} title={`${quiz?.activeQuestion}/${questionsLength}`}/>
+                    <Options />
+                </div> 
+            </div>)
    
 }

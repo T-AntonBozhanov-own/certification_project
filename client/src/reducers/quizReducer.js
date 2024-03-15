@@ -8,7 +8,7 @@ export const getQuizes = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await axios.get(
-        'http://localhost:3001/api/quiz')
+        'http://localhost:3001/api/quiz', { withCredentials: true })
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.message })
@@ -20,21 +20,25 @@ const quizSlice = createSlice({
   name: 'quiz',
   initialState: {
     data: [],
-    isFetching: false
+    isFetching: false,
+    activeQuestion: 0
   },
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getQuizes.pending, (state) => {
       state.data = {}
       state.isFetching = true
+      state.activeQuestion = 0
     })
     builder.addCase(getQuizes.fulfilled, (state, { payload }) => {
       state.data = payload
       state.isFetching = false
+      state.activeQuestion = 0
     })
     builder.addCase(getQuizes.rejected, (state, action) => {
       state.data = {}
       state.isFetching = false
+      state.activeQuestion = 0
     })
   },
 })

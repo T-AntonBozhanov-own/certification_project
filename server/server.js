@@ -17,20 +17,24 @@ const app = express() // Creates an express application in app
  * We need to use cors so we can connect to a localhost later
  * We need express.json so we can receive requests with JSON data attached
  */
-app.use(cors())
+app.use(cors({
+  credentials: true,
+  origin: 'http://localhost:5173'
+}))
+
 app.use(express.json())
 
 app.use(morgan('dev'))
 app.use(session({
+    name: 'name',
     secret: 'secret',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 6000000, secure: true }
+    cookie: { maxAge: 6000000, secure: false }
   }))
   
 //Make db connections
 makeConnection()
-  
 
 app.use('/', quizRouter)
 app.use('/', userRouter)

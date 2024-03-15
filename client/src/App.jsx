@@ -10,19 +10,30 @@ import {
  */
 import {HomePage} from './components/HomePage'
 import {LoginPage} from './components/LoginPage'
-
 import About from './components/About'
+import customHistory from './utils/browserHistory';
+import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { getUser } from './reducers/userReducer'
+
 
 const App = () => {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getUser())
+  }, [])
+  
   return (
-    <Router>
+    <HistoryRouter history={customHistory}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<HomePage />} />
           <Route path="/about" element={<About />} />
         </Routes>
-    </Router>
+    </HistoryRouter>
   );
 }
 

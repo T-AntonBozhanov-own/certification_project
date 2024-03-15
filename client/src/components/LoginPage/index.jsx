@@ -2,12 +2,20 @@ import {onLogin} from '../../services/personService'
 import styles from './loginPage.module.css'
 import { useSelector, useDispatch } from 'react-redux'
 import {login} from '../../reducers/userReducer'
-import {Navigate} from 'react-router-dom'
+import {Navigate, redirect} from 'react-router-dom'
+import { useEffect } from 'react'
 
 
 export const LoginPage = () => {
     const user = useSelector((state) => state.user)
     const dispatch = useDispatch()
+
+    useEffect(() => {
+        debugger
+        if(user.isLoggedIn) {
+            redirect('/')
+        }
+    }, [user.isLoggedIn])
 
     const handleSubmit = (e) => {
         e.preventDefault()

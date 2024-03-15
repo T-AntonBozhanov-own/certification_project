@@ -29,7 +29,6 @@ loginRouter.post(`${LOGIN_PATH}`, async (request, response) => {
         }  
 
         const loggedInUser = await User.findById(person.user)
-        console.log('request', request.session)
     
         response.status(HTTP_CODE.SUCCESS).json({
             name: loggedInUser.name,

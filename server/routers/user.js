@@ -3,6 +3,7 @@ const {HTTP_CODE} = require("../constants/httpCodes");
 const { USER_PATH } = require('./constants')
 const User = require('../models/user')
 const Quiz = require('../models/quiz')
+const sessionChecker = require('../middlewares/sessionChecker')
 
 
 /**
@@ -10,15 +11,20 @@ const Quiz = require('../models/quiz')
  * @receives a get request to the URL: http://localhost:3001/api/user/:id
  * @responds with returning specific data as a JSON
  */
-userRouter.get(`${USER_PATH}/:id`, async (request, response) => {
+userRouter.get(`${USER_PATH}`, sessionChecker, async (request, response) => {
     try {
-        const id = Number(request.params.id)
-        const quiz = await User.findById(id);
+        const {username} = request?.session?.user
+        console.log('username', username)
+        const user = await User.findOne({name: username}).exec()
+        console.log('user', user)
 
-        if (!currency) {
+        if (!user) {
             return response.status(HTTP_CODE.BAD_REQUEST).send({ error: 'resource not found'})
         }
-        response.json(quiz)
+        response.status(HTTP_CODE.SUCCESS).json({
+            name: user.name,
+            completedQuizes: user.completedQuizes
+        })
     } catch (e) {
         response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found' })
     }

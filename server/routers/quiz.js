@@ -2,16 +2,23 @@ const quizRouter = require('express').Router()
 const {HTTP_CODE} = require("../constants/httpCodes");
 const { QUIZ_PATH } = require('./constants')
 const Quiz = require('../models/quiz')
+const sessionChecker = require('../middlewares/sessionChecker')
 
 /**
  * @receives a get request to the URL: http://localhost:3001/api/quiz
  * @responds with the string list of available quizes'
  */
-quizRouter.get(QUIZ_PATH, async (request, response) => {
+quizRouter.get(QUIZ_PATH, sessionChecker, async (request, response) => {
     try{
         // Get all quizes
+        console.log('request', request.session)
         const quizes = await Quiz.find({});
-        response.json(quizes)
+        const responce = quizes.map(item => ({
+            name: item.name,
+            questions: item.questions,
+            highest_score: item.highest_score
+        }))
+        response.json(responce)
     } catch (e) {
         response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found' })
     }
