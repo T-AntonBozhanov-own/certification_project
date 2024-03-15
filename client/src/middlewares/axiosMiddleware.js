@@ -1,5 +1,5 @@
 import axios from 'axios'
-import broeserHistory from '../utils/browserHistory'
+import browserHistory from '../utils/browserHistory'
 
 export const axiosMiddleware = (store) => (next) => (action) => {
   console.log('action:', action)
@@ -22,7 +22,7 @@ export const setInterceptors = (store) => {
     function (error) {
       console.log('error', error)
       console.log('inside interceptors - error', store.getState())
-      broeserHistory.replace('/login')
+      browserHistory.replace('/login')
       return Promise.reject(error)
     }
   )

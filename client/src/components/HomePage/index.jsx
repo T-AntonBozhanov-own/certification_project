@@ -14,6 +14,7 @@ export const HomePage = () => {
     useEffect(() => {
         dispatch(getQuizes())
     }, [])
+    
     const questionsLength = quiz?.data?.[0]?.questions?.length ?? 0
   
     return (<div className={style.container}>

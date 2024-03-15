@@ -5,6 +5,7 @@ const { LOGIN_PATH } = require('./constants')
 
 const Person = require('../models/person');
 const User = require('../models/user');
+const sessionChecker = require('../middlewares/sessionChecker')
 
 
 loginRouter.post(`${LOGIN_PATH}`, async (request, response) => {
@@ -38,5 +39,11 @@ loginRouter.post(`${LOGIN_PATH}`, async (request, response) => {
         response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found' })
     }
 })
+
+loginRouter.delete(`${LOGIN_PATH}`, sessionChecker, async (request, response) => {
+    request.session.destroy()
+    response.status(HTTP_CODE.SUCCESS).send({})
+})
+
 
 module.exports = loginRouter

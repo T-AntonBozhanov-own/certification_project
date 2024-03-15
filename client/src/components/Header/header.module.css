@@ -14,4 +14,8 @@
             width: 100px;
         }
     }
+
+    .logout {
+        margin-left: 16px;
+    }
 }
