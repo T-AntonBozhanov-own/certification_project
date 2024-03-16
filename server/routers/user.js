@@ -14,9 +14,7 @@ const sessionChecker = require('../middlewares/sessionChecker')
 userRouter.get(`${USER_PATH}`, sessionChecker, async (request, response) => {
     try {
         const {username} = request?.session?.user
-        console.log('username', username)
         const user = await User.findOne({name: username}).exec()
-        console.log('user', user)
 
         if (!user) {
             return response.status(HTTP_CODE.BAD_REQUEST).send({ error: 'resource not found'})

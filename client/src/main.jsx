@@ -13,7 +13,6 @@ import { Provider } from 'react-redux'
 /**
  * Importing reducers
  */
-import testReducer from './reducers/testReducer.js'
 import userReducer from './reducers/userReducer.js'
 import quizReducer from './reducers/quizReducer.js'
 
@@ -22,7 +21,6 @@ import quizReducer from './reducers/quizReducer.js'
  */
 const store = configureStore({
   reducer: {
-    test: testReducer,
     user: userReducer,
     quizes: quizReducer
   },

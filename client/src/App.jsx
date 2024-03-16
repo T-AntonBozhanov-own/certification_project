@@ -24,14 +24,12 @@ const App = () => {
   useEffect(() => {
     dispatch(getUser())
   }, [])
-  
+
   return (
     <HistoryRouter history={customHistory}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<HomePage />} />
-          <Route path="/about" element={<About />} />
         </Routes>
     </HistoryRouter>
   );

@@ -90,7 +90,7 @@ const userSlice = createSlice({
     })
     builder.addCase(getUser.fulfilled, (state, { payload }) => {
       state.data = payload
-      state.isLoggedIn = fa
+      state.isLoggedIn = false
       state.isFetching = false
     })
     builder.addCase(getUser.rejected, (state, action) => {

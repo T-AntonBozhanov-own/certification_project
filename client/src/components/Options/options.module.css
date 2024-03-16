@@ -1,15 +1,10 @@
 .container {
-    display: grid;
-    grid-template-rows: 40px 1fr;
     padding: 20px 40px 20px 40px;
     background-color: #141c3a;
 
-    .count {
-        height: 20px;
-    }
-
     .options {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         height: 100%;
