@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --experimental-vm-modules $(yarn bin jest) --verbose --runInBand"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.1.0",
