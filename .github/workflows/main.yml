@@ -1,0 +1,43 @@
+name: miniproject-pipeleines
+on: 
+  push: 
+    branches: 
+      - production
+jobs:
+  deployment:
+    name: deployment-job
+    runs-on: ubuntu-latest
+    environment: 
+      name: sertification_project_IV
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v1 
+
+      - name: set up node environment
+        uses: actions/setup-node@v4.0.2
+
+      - name: installing server dependecies
+        run: yarn
+        working-directory: ./server
+
+      # - name: run server tests
+      #   run: yarn test
+      #   working-directory: ./server
+      #   env: 
+      #     DB_HOSTNAME: ${{ secrets.DB_HOSTNAME }}
+      #     DB_PORT: ${{ secrets.DB_PORT }}
+      #     DB_USERNAME: ${{ secrets.DB_USERNAME }} 
+      #     DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      #     DB_NAME: ${{ secrets.DB_NAME }}
+
+      - name: installing client dependecies
+        run: yarn
+        working-directory: ./client
+        
+      # - name: run client tests
+      #   run: yarn test
+      #   working-directory: ./client
+        
+      - name: build client code
+        run: yarn build
+        working-directory: ./client
