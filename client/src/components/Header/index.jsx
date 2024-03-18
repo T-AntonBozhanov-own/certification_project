@@ -7,6 +7,6 @@ export const Header = () => {
     const dispatch = useDispatch()
 
 
-   return <HeaderComponent name={name} handleClick={() => dispatch(logout()} />
+   return <HeaderComponent name={name} handleClick={() => dispatch(logout())} />
 }
 
