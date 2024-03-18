@@ -9,7 +9,7 @@ export const getQuizes = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await axios.get(
-        'http://localhost:3001/api/quiz', { withCredentials: true })
+        '/api/quiz', { withCredentials: true })
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.message })
@@ -22,7 +22,7 @@ export const getQuizResult = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const response = await axios.post(
-        'http://localhost:3001/api/quiz', data, { withCredentials: true })
+        '/api/quiz', data, { withCredentials: true })
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.message })

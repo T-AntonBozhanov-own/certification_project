@@ -12,7 +12,7 @@ export const login = createAsyncThunk(
   async (user, thunkAPI) => {
     try {
       const response = await axios.post(
-        'http://localhost:3001/api/login', user, { withCredentials: true })
+        '/api/login', user, { withCredentials: true })
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.message})
@@ -25,7 +25,7 @@ export const signUp = createAsyncThunk(
   async (user, thunkAPI) => {
     try {
       const response = await axios.post(
-        'http://localhost:3001/api/person', user, { withCredentials: true })
+        '/api/person', user, { withCredentials: true })
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.message })
@@ -38,7 +38,7 @@ export const getUser = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await axios.get(
-        'http://localhost:3001/api/user', { withCredentials: true })
+        '/api/user', { withCredentials: true })
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.message })
@@ -51,7 +51,7 @@ export const logout = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await axios.delete(
-        'http://localhost:3001/api/login', { withCredentials: true })
+        '/api/login', { withCredentials: true })
       browserHistory.replace('/login')
       return response.data
     } catch (error) {
@@ -122,7 +122,6 @@ const userSlice = createSlice({
 })
 
 const { actions, reducer } = userSlice
-// export const { setIsLoggedIn } = actions;
 export default reducer
 
 
