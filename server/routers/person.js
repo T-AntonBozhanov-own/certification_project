@@ -7,8 +7,8 @@ const Person = require('../models/person')
 const User = require('../models/user')
 
 /**
- * @receives a get request to the URL: http://localhost:3001/api/quiz
- * @responds with the string list of available quizes'
+ * @receives a get request to the URL: /api/person
+ * @responds with the list of available persons'
  */
 personRouter.get(PERSON_PATH, async (request, response) => {
     try{
@@ -21,16 +21,15 @@ personRouter.get(PERSON_PATH, async (request, response) => {
 })
 
 /**
- * TODO: GET:id Endpoint
- * @receives a get request to the URL: http://localhost:3001/api/quiz/:id
- * @responds with returning specific data as a JSON
+ * @receives a get request to the URL: /api/person/:id
+ * @responds with the person entity
  */
 personRouter.get(`${PERSON_PATH}/:id`, async (request, response) => {
     try {
         const id = Number(request.params.id)
         const person = await Person.findById(id);
 
-        if (!currency) {
+        if (!person) {
             return response.status(HTTP_CODE.BAD_REQUEST).send({ error: 'resource not found'})
         }
         response.json(person)
@@ -39,6 +38,10 @@ personRouter.get(`${PERSON_PATH}/:id`, async (request, response) => {
     }
 })
 
+/**
+ * @receives a post request to the URL: /api/person
+ * @responds with the person entity
+ */
 personRouter.post(`${PERSON_PATH}`, async (request, response) => {
     try {
         const content = request.body
@@ -74,12 +77,47 @@ personRouter.post(`${PERSON_PATH}`, async (request, response) => {
     }
 })
 
+/**
+ * @receives a post request to the URL: /api/person/:newName
+ * @responds with the person entity
+ */
+personRouter.put(`${PERSON_PATH}`, async (request, response) => {
+    try {
+        const newName = request.params.newName
+
+        const duplicateCount = await Person.countDocuments({username: newName}).exec()
+        if(duplicateCount !== 0) {
+            return response.status(HTTP_CODE.BAD_REQUEST).send({ error: 'User with this username already exist'})
+        }
+
+        const updatedUser = await Person.findOneAndUpdate({name: request.session.user}, {
+            name: newName
+        }, 
+        {new: true})
+        
+        await updatedUser.save()
+
+        response.status(HTTP_CODE.CREATED).send(updatedUser)
+    } catch (e) {
+        response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found' })
+    }
+})
+
+
+/**
+ * @receives a delete request to the URL: /api/person/:name
+ * @responds with the http code
+ */
 personRouter.delete(`${PERSON_PATH}/:id`, async (request, response) => {
     try {
-        const id = Number(request.params.id)
+        const name = request.params.name
 
-        //Get user to delete
-        const userToDelete = Person.findById(id)?.user
+        //Get person to delete
+        const personToDelete = await Person.findOne({name})
+
+        //delete person from db
+        await Person.deleteOne({name})
+        await User.deleteByID(personToDelete._id)
         response.status(HTTP_CODE.NO_CONTENT).send()
     } catch (e) {
         response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found' })

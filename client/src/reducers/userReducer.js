@@ -6,13 +6,14 @@ export const LOGOUT_ACTION = 'user/logout'
 export const SIGNUP_ACTION = 'user/signup'
 export const FETCH_USER_ACTION = 'user/fetchUser'
 import browserHistory from '../utils/browserHistory'
+import { ROUTES } from '../constants/apiRoutes'
 
 export const login = createAsyncThunk(
   LOGIN_ACTION,
   async (user, thunkAPI) => {
     try {
       const response = await axios.post(
-        '/api/login', user, { withCredentials: true })
+        ROUTES.LOGIN._, user, { withCredentials: true })
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.message})
@@ -25,7 +26,7 @@ export const signUp = createAsyncThunk(
   async (user, thunkAPI) => {
     try {
       const response = await axios.post(
-        '/api/person', user, { withCredentials: true })
+        ROUTES.PERSON._, user, { withCredentials: true })
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.message })
@@ -38,7 +39,7 @@ export const getUser = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await axios.get(
-        '/api/user', { withCredentials: true })
+        ROUTES.USER._, { withCredentials: true })
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.message })
@@ -51,7 +52,7 @@ export const logout = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await axios.delete(
-        '/api/login', { withCredentials: true })
+        ROUTES.LOGIN._, { withCredentials: true })
       browserHistory.replace('/login')
       return response.data
     } catch (error) {
