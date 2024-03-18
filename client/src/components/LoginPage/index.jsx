@@ -1,9 +1,10 @@
-import {onLogin} from '../../services/personService'
 import styles from './loginPage.module.css'
 import { useSelector, useDispatch } from 'react-redux'
 import {login, signUp} from '../../reducers/userReducer'
 import {Navigate, redirect} from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { LoginComponent } from './loginComponent'
+import { SignUpComponent } from './signUpComponent'
 
 
 export const LoginPage = () => {
@@ -41,36 +42,13 @@ export const LoginPage = () => {
         user.isLoggedIn ? 
             <Navigate to="/" replace /> :
              <div className={styles.container}>
-                <span>Login</span>
-                <form className={styles.form} onSubmit={handleSubmitLogin}>
-                    <input
-                        name='username'
-                        placeholder='username'
-                    />
-                    <input
-                        name='password'
-                        type='password'
-                        placeholder='password'
-                    />
-                    <button type='submit'>Login</button>
-                </form>
+                <LoginComponent handleSubmitLogin={handleSubmitLogin}/>
                 {isShowSignUp ? null : <button onClick={() => setIsShowSignup(true)}>Click here for sign up</button>}
-                {isShowSignUp ? <div>
-                    <span>SignUp</span>
-                    <form className={styles.form} onSubmit={handleSubmitSignup}>
-                        <input
-                            name='username'
-                            placeholder='username'
-                        />
-                        <input
-                            name='password'
-                            type='password'
-                            placeholder='password'
-                        />
-                        <button type='submit'>SignUp</button>
-                    </form>
-                    {user.isSignUpSuccess ? <span>Now you can login with your username and passwors</span> : null}
-                </div> : null}
+                {isShowSignUp ? 
+                    <SignUpComponent 
+                        setIsShowSignup={user.setIsShowSignup} 
+                        handleSubmitSignup={handleSubmitSignup}
+                    /> : null}
             </div>
     )
 }
