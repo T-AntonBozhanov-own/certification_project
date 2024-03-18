@@ -34,9 +34,9 @@ jobs:
         run: yarn
         working-directory: ./client
         
-      # - name: run client tests
-      #   run: yarn test
-      #   working-directory: ./client
+      - name: run client tests
+        run: yarn test
+        working-directory: ./client
         
       - name: build client code
         run: yarn build
