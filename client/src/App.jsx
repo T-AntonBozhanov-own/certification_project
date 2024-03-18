@@ -10,7 +10,6 @@ import {
  */
 import {HomePage} from './components/HomePage'
 import {LoginPage} from './components/LoginPage'
-import About from './components/About'
 import customHistory from './utils/browserHistory';
 import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import { useEffect } from 'react';

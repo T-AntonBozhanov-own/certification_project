@@ -2,7 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "description": "basic package manager",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development node server.js",
     "dev": "cross-env NODE_ENV=development nodemon server.js",
@@ -14,7 +14,9 @@
   "author": "Anton Bozhanov",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.0",
+    "supertest": "^6.3.4"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

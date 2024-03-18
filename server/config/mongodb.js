@@ -5,7 +5,8 @@ const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
 
 const makeConnection = async () => {
-    const dbUrl = process.env.MONGO_URL
+    const dbUrl = process.env.NODE_ENV === 'test' ? process.env.MONGO_URL_TEST :
+    process.env.MONGO_URL
     
     try {
         console.log(`Connecting to .... ${dbUrl}`)
