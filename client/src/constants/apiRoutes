@@ -1,0 +1,15 @@
+export const ROUTES = {
+    QUIZ: {
+        _: '/api/quiz',
+    },
+    USER: {
+        _: '/api/user',
+        GET_RESULT: '/api/user/result'
+    },
+    LOGIN: {
+        _: '/api/login'
+    },
+    PERSON: {
+        _: '/api/person'
+    }
+}

@@ -7,7 +7,10 @@ const Person = require('../models/person');
 const User = require('../models/user');
 const sessionChecker = require('../middlewares/sessionChecker')
 
-
+/**
+ * @receives a post request to the URL: /api/login
+ * @responds with the object of logged in user'
+ */
 loginRouter.post(`${LOGIN_PATH}`, async (request, response) => {
     try {
         const {username, password} = request.body
@@ -38,6 +41,10 @@ loginRouter.post(`${LOGIN_PATH}`, async (request, response) => {
     }
 })
 
+/**
+ * @receives a delete request to the URL: /api/login
+ * @responds end user session and send 200'
+ */
 loginRouter.delete(`${LOGIN_PATH}`, sessionChecker, async (request, response) => {
     request.session.destroy()
     response.status(HTTP_CODE.SUCCESS).send({})

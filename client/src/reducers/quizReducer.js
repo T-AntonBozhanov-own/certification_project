@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { ROUTES } from '../constants/apiRoutes'
 
 export const FETCH_ACTION = 'quiz/fetchQuizes'
 export const GET_RESULT_ACTION = 'quiz/getQuizResult'
@@ -9,7 +10,7 @@ export const getQuizes = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await axios.get(
-        '/api/quiz', { withCredentials: true })
+        ROUTES.QUIZ._, { withCredentials: true })
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.message })
@@ -22,7 +23,7 @@ export const getQuizResult = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const response = await axios.post(
-        '/api/quiz', data, { withCredentials: true })
+        ROUTES.USER.GET_RESULT, data, { withCredentials: true })
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.message })
