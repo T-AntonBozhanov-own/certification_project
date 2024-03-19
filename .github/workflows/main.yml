@@ -23,6 +23,9 @@ jobs:
       - name: run server tests
         run: yarn test
         working-directory: ./server
+        env: 
+          MONGO_URL: ${{ secrets.MONGO_URL }}
+          MONGO_URL_TEST: ${{ secrets.MONGO_URL_TEST }}
 
       - name: installing client dependecies
         run: yarn
