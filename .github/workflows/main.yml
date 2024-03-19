@@ -20,15 +20,9 @@ jobs:
         run: yarn
         working-directory: ./server
 
-      # - name: run server tests
-      #   run: yarn test
-      #   working-directory: ./server
-      #   env: 
-      #     DB_HOSTNAME: ${{ secrets.DB_HOSTNAME }}
-      #     DB_PORT: ${{ secrets.DB_PORT }}
-      #     DB_USERNAME: ${{ secrets.DB_USERNAME }} 
-      #     DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      #     DB_NAME: ${{ secrets.DB_NAME }}
+      - name: run server tests
+        run: yarn test
+        working-directory: ./server
 
       - name: installing client dependecies
         run: yarn

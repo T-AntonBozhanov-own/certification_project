@@ -15,10 +15,10 @@ quizRouter.get(QUIZ_PATH, sessionChecker, async (request, response) => {
         // Get all quizes
         const quizes = await Quiz.find({});
         const responce = quizes.map(item => ({
-            name: item.name,
-            questions: item.questions,
-            highest_score: item.highest_score
-        }))
+                name: item.name,
+                questions: item.questions,
+                highest_score: item.highest_score
+            }))
         response.json(responce)
     } catch (e) {
         response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found' })
@@ -29,17 +29,23 @@ quizRouter.get(QUIZ_PATH, sessionChecker, async (request, response) => {
  * @receives a get request to the URL: /quiz/:name
  * @responds with returning specific data as a JSON
  */
-quizRouter.get(`${QUIZ_PATH}/:name`, async (request, response) => {
+quizRouter.get(`${QUIZ_PATH}/:id`, async (request, response) => {
     try {
-        const name = Number(request.params.name)
-        const quiz = await Quiz.findOne({name});
+        const id = request.params.id
+        const quiz = await Quiz.findById(id)
 
         if (!quiz) {
             return response.status(HTTP_CODE.BAD_REQUEST).send({ error: 'resource not found'})
         }
-        response.json(quiz)
+
+        const responce = {
+            name: quiz.name,
+            questions: quiz.questions,
+            highest_score: quiz.highest_score
+        }
+        response.json(responce)
     } catch (e) {
-        response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found' })
+        response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found', e })
     }
 })
 
