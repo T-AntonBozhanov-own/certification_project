@@ -1,8 +1,9 @@
 require('dotenv').config();
 const {closeConnection} = require('../config/mongodb')
 const server = require('../server')
-const { USER_PATH } = require('../routers/constants')
+const { QUIZ_PATH } = require('../routers/constants')
 const session = require('supertest-session');
+const {quizData} = require('./test_helper')
 
 var testSession = null;
     
@@ -10,10 +11,10 @@ beforeEach(function () {
     testSession = session(server);
 });
 
-afterAll(async () => {
+ afterAll(async () => {
     // Closes connection after all tests run
     await closeConnection()
-    await server.close()
+    server.close()
   })
 
 describe('GET test', () => {
@@ -29,19 +30,14 @@ describe('GET test', () => {
         return done();
       });
   });
-  
-  test('get user by name', async () => {
-    const res = await authenticatedSession.get(USER_PATH).expect(200);
-    expect(res.body).toEqual({
-          completedQuizes: [
-             {
-               _id: "65f80722fbba913160e8f40c",
-               quizId: "65f7e425de64f32c6daa42ff",
-               quizScore: 30,
-             },
-           ],
-           name: "user1",
-    });
+
+  test('get quiz list', async () => {
+    const res = await authenticatedSession.get(QUIZ_PATH).expect(200);
+    expect(res.body).toEqual(quizData);
     })
+  test('get quiz by name', async () => {
+      const res = await authenticatedSession.get(`${QUIZ_PATH}/65f7e425de64f32c6daa42ff`).expect(200);
+      expect(res.body).toEqual(quizData[0]);
+    })  
 })
 

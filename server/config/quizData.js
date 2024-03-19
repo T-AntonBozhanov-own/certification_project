@@ -1,6 +1,6 @@
 const quizData = [{
    name: 'Js basics',
-    questions: [
+   questions: [
          {
          question: 'Which of the following is not a primitive data type in JavaScript?',
          options: ['Number', 'String', 'Boolean', 'Object'],

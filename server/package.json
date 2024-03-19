@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development node server.js",
     "dev": "cross-env NODE_ENV=development nodemon server.js",
-    "test": "cross-env NODE_ENV=test jest --verbose -runInBand",
+    "test": "cross-env NODE_ENV=test jest --verbose -runInBand --maxWorkers=1",
     "build:ui": "rm -rf dist && cd ../client && yarn build && cp -r dist ../server && rm -rf dist",
     "push:full": "yarn build:ui && cd ../server && git add . && git commit -m 'build' && git push"
   },
@@ -15,8 +15,10 @@
   "license": "ISC",
   "devDependencies": {
     "jest": "^29.7.0",
+    "keygrip": "^1.1.0",
     "nodemon": "^3.1.0",
-    "supertest": "^6.3.4"
+    "supertest": "^6.3.4",
+    "supertest-session": "^5.0.1"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
