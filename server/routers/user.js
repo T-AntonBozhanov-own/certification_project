@@ -52,12 +52,16 @@ userRouter.post(`${USER_PATH}/result`, async (request, response) => {
         const {username} = request?.session?.user
         const user = await User.findOne({name: username})
 
-        console.log("user", user)
+        const completedQuizes = user.completedQuizes
+        console.log('completedQuizes', completedQuizes)
+
         const updatedUser = await User.findOneAndUpdate({name: user.name}, {
-            completedQuizes: {
-                quizId: quiz._id,
-                quizScore: result
-            }
+            completedQuizes: [
+                ...completedQuizes,
+                {
+                    quizId: quiz._id,
+                    quizScore: result
+            }]
         }, 
         {new: true})
         

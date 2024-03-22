@@ -4,10 +4,12 @@ import { Options } from "../Options"
 import style from './homePage.module.css'
 import {useSelector, useDispatch} from 'react-redux'
 import { useEffect } from "react"
-import {getQuizes, selectQuiz, setAnswer, setBackToSelectQuizes, getQuizResult} from '../../reducers/quizReducer'
+import {getQuizes, selectQuiz, setAnswer, setBackToSelectQuizes, getQuizResult, deleteQuiz} from '../../reducers/quizReducer'
 import { SelectQuiz } from "../SelectQuiz"
+import { useNavigate } from "react-router-dom";
 
 export const HomePage = () => {
+    const navigate = useNavigate()
     const quiz = useSelector((state) => {
        return state.quizes
     });
@@ -44,6 +46,14 @@ export const HomePage = () => {
             }))
         }
     }, [quiz, getActiveQuiz])
+
+    const handleEditQuiz = (name) => {
+        navigate('/quiz', {state: {name}})
+    }
+
+    const handleRemoveQuiz = (name) => {
+        dispatch(deleteQuiz(name))
+    }
   
     return quiz ? (<div className={style.container}>
                 <Header/>
@@ -65,7 +75,7 @@ export const HomePage = () => {
                                     </div>
                                 </> 
                         } 
-                       </> : <SelectQuiz quizes={quiz.data} selectQuiz={handleSelectQuiz} />
+                       </> : <SelectQuiz quizes={quiz.data} selectQuiz={handleSelectQuiz} editQuiz={handleEditQuiz} removeQuiz={handleRemoveQuiz} />
                     }
             </div>): null
    

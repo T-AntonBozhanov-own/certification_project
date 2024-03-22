@@ -10,6 +10,7 @@ import {
  */
 import {HomePage} from './components/HomePage'
 import {LoginPage} from './components/LoginPage'
+import {QuizPage} from './components/QuizPage'
 import customHistory from './utils/browserHistory';
 import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import { useEffect } from 'react';
@@ -29,6 +30,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/quiz" element={<QuizPage />} />
         </Routes>
     </HistoryRouter>
   );

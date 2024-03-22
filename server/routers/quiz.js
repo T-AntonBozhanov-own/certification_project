@@ -16,17 +16,23 @@ quizRouter.get(QUIZ_PATH, sessionChecker, async (request, response) => {
         const quizes = await Quiz.find({});
         const responce = quizes.map(item => ({
                 name: item.name,
-                questions: item.questions,
+                questions: item.questions.map(item => ({
+                    question: item.question,
+                    options: item.options,
+                    correct_answer: item.correct_answer,
+                    points: item.points
+                })),
                 highest_score: item.highest_score
             }))
         response.json(responce)
     } catch (e) {
+        console.log(e)
         response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found' })
     }
 })
 
 /**
- * @receives a get request to the URL: /quiz/:name
+ * @receives a get request to the URL: /quiz/:id
  * @responds with returning specific data as a JSON
  */
 quizRouter.get(`${QUIZ_PATH}/:id`, async (request, response) => {
@@ -50,28 +56,68 @@ quizRouter.get(`${QUIZ_PATH}/:id`, async (request, response) => {
 })
 
 /**
- * @receives a post request to the URL: /quiz
+ * @receives a post request to the URL: /quiz/add
  * @responds with returning specific data as a JSON with created quiz
  */
-quizRouter.post(`${QUIZ_PATH}`, async (request, response) => {
+quizRouter.post(`${QUIZ_PATH}/add`, sessionChecker, async (request, response) => {
     try {
-        const {name, questions, highest_score} = request.body
+        const {name, questions} = request.body
 
-        if (!name || !questions || !highest_score) {
+        if (!name || !questions) {
             return response.status(HTTP_CODE.BAD_REQUEST).send({ error: 'content missing'})
+        }
+
+        const duplicateCount = await Quiz.countDocuments({name}).exec()
+        if(duplicateCount !== 0) {
+            return response.status(HTTP_CODE.BAD_REQUEST).send({ error: 'Quiz with this name already exist'})
         }
 
         const quiz = new Quiz({
             name,
-            questions,
-            highest_score
+            questions: questions.map(item => ({
+                question: item.question,
+                correct_answer: Number(item.correct_answer),
+                points: Number(item.points),
+                options: item.options.split(',')
+                })),
+            highest_score: questions.reduce((acc, item) => acc + Number(item.points), 0)
         })
 
         await quiz.save()
 
         response.status(HTTP_CODE.SUCCESS).send(quiz)
     } catch (e) {
-        response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: e })
+        response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({})
+    }
+})
+
+quizRouter.put(`${QUIZ_PATH}/edit`, sessionChecker, async (request, response) => {
+    try {
+        const {name, questions} = request.body
+
+        if (!name || !questions) {
+            return response.status(HTTP_CODE.BAD_REQUEST).send({ error: 'content missing'})
+        }
+
+        console.log(name, questions)
+
+        const updatedQuiz = await Quiz.findOneAndUpdate({name}, {
+            questions: questions.map(item => ({
+                question: item.question,
+                correct_answer: Number(item.correct_answer),
+                points: Number(item.points),
+                options: item.options.split(',')
+                })),
+            highest_score: questions.reduce((acc, item) => acc + Number(item.points), 0)
+        }, 
+        {new: true})
+        
+        await updatedQuiz.save()
+
+        response.status(HTTP_CODE.SUCCESS).send(updatedQuiz)
+    } catch (e) {
+        console.log(e)
+        response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({})
     }
 })
 
@@ -79,21 +125,42 @@ quizRouter.post(`${QUIZ_PATH}`, async (request, response) => {
  * @receives a delete request to the URL: /api/quiz/:name
  * @responds with the http code
  */
-quizRouter.delete(`${QUIZ_PATH}/:name`, async (request, response) => {
+quizRouter.delete(`${QUIZ_PATH}/:name`, sessionChecker, async (request, response) => {
     try {
         const name = request.params.name
 
         const quizToDelete = await Quiz.findOne({name})
+        console.log('quizToDelete', quizToDelete)
 
         //Find all users which completed quiz to delete
-        const usersWithCompletedQuiz = await User.filter(user => user.completedQuizes.quizId === quizToDelete._id )
+        const usersWithCompletedQuiz = await User.find({
+            completedQuizes: { $all: [
+                { "$elemMatch" : { quizId: quizToDelete._id } },
+              ]}
+        })
 
-        // Remove this quiz id from this users
-        await Promise.all(usersWithCompletedQuiz.forEach(user => user.completedQuizes.filter(quizId => quizId !== quizToDelete._id )))
+        const names = usersWithCompletedQuiz.map(user => user.name)
+
+        console.log('usersWithCompletedQuiz', usersWithCompletedQuiz)
+
+        // // Remove this quiz id from this users
+        await User.updateMany(
+            {
+                completedQuizes: { $all: [
+                    { "$elemMatch" : { quizId: quizToDelete._id } },
+                  ]}
+            },
+            {'$pull': {
+                completedQuizes: { quizId: quizToDelete._id }
+              }}
+        ).exec()
+
+        
 
         await Quiz.deleteOne({name})
-        response.status(HTTP_CODE.NO_CONTENT).send()
+        response.status(HTTP_CODE.SUCCESS).send({name})
     } catch (e) {
+        console.log(e)
         response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found' })
     }
 })
