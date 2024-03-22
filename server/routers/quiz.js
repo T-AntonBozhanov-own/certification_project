@@ -16,11 +16,17 @@ quizRouter.get(QUIZ_PATH, sessionChecker, async (request, response) => {
         const quizes = await Quiz.find({});
         const responce = quizes.map(item => ({
                 name: item.name,
-                questions: item.questions,
+                questions: item.questions.map(item => ({
+                    question: item.question,
+                    options: item.options,
+                    correct_answer: item.correct_answer,
+                    points: item.points
+                })),
                 highest_score: item.highest_score
             }))
         response.json(responce)
     } catch (e) {
+        console.log(e)
         response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found' })
     }
 })
@@ -61,6 +67,11 @@ quizRouter.post(`${QUIZ_PATH}/add`, sessionChecker, async (request, response) =>
             return response.status(HTTP_CODE.BAD_REQUEST).send({ error: 'content missing'})
         }
 
+        const duplicateCount = await Quiz.countDocuments({name}).exec()
+        if(duplicateCount !== 0) {
+            return response.status(HTTP_CODE.BAD_REQUEST).send({ error: 'Quiz with this name already exist'})
+        }
+
         const quiz = new Quiz({
             name,
             questions: questions.map(item => ({
@@ -76,6 +87,36 @@ quizRouter.post(`${QUIZ_PATH}/add`, sessionChecker, async (request, response) =>
 
         response.status(HTTP_CODE.SUCCESS).send(quiz)
     } catch (e) {
+        response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({})
+    }
+})
+
+quizRouter.put(`${QUIZ_PATH}/edit`, sessionChecker, async (request, response) => {
+    try {
+        const {name, questions} = request.body
+
+        if (!name || !questions) {
+            return response.status(HTTP_CODE.BAD_REQUEST).send({ error: 'content missing'})
+        }
+
+        console.log(name, questions)
+
+        const updatedQuiz = await Quiz.findOneAndUpdate({name}, {
+            questions: questions.map(item => ({
+                question: item.question,
+                correct_answer: Number(item.correct_answer),
+                points: Number(item.points),
+                options: item.options.split(',')
+                })),
+            highest_score: questions.reduce((acc, item) => acc + Number(item.points), 0)
+        }, 
+        {new: true})
+        
+        await updatedQuiz.save()
+
+        response.status(HTTP_CODE.SUCCESS).send(updatedQuiz)
+    } catch (e) {
+        console.log(e)
         response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({})
     }
 })

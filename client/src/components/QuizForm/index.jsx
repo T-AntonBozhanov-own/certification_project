@@ -1,11 +1,11 @@
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 
-export const QuizForm = ({handleSubmit, mutators: { push }}) =>  (
+export const QuizForm = ({handleSubmit, mutators: { push }, isNameFieldDisabled}) =>  (
         <form onSubmit={handleSubmit}> 
             <div>
                 <label>Quiz name</label>
-                <Field name="name" component="input" placeholder="Quiz name" />
+                <Field name="name" component="input" placeholder="Quiz name" disabled={isNameFieldDisabled} />
             </div>
             <FieldArray name="questions">
               {({ fields }) =>
