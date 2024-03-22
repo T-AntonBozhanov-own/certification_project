@@ -22,7 +22,7 @@ describe('GET test', () => {
 
   beforeEach(function (done) {
     testSession.post('/api/login')
-      .send({ username: 'user1', password: '12345' })
+      .send({ username: 'user', password: '12345' })
       .expect(200)
       .end(function (err) {
         if (err) return done(err);
@@ -35,7 +35,7 @@ describe('GET test', () => {
     const res = await authenticatedSession.get(QUIZ_PATH).expect(200);
     expect(res.body).toEqual(quizData);
     })
-  test('get quiz by name', async () => {
+  test('get quiz by id', async () => {
       const res = await authenticatedSession.get(`${QUIZ_PATH}/65f7e425de64f32c6daa42ff`).expect(200);
       expect(res.body).toEqual(quizData[0]);
     })  
