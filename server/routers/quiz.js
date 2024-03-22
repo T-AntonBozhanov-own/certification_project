@@ -26,7 +26,7 @@ quizRouter.get(QUIZ_PATH, sessionChecker, async (request, response) => {
 })
 
 /**
- * @receives a get request to the URL: /quiz/:name
+ * @receives a get request to the URL: /quiz/:id
  * @responds with returning specific data as a JSON
  */
 quizRouter.get(`${QUIZ_PATH}/:id`, async (request, response) => {
@@ -50,28 +50,33 @@ quizRouter.get(`${QUIZ_PATH}/:id`, async (request, response) => {
 })
 
 /**
- * @receives a post request to the URL: /quiz
+ * @receives a post request to the URL: /quiz/add
  * @responds with returning specific data as a JSON with created quiz
  */
-quizRouter.post(`${QUIZ_PATH}`, async (request, response) => {
+quizRouter.post(`${QUIZ_PATH}/add`, sessionChecker, async (request, response) => {
     try {
-        const {name, questions, highest_score} = request.body
+        const {name, questions} = request.body
 
-        if (!name || !questions || !highest_score) {
+        if (!name || !questions) {
             return response.status(HTTP_CODE.BAD_REQUEST).send({ error: 'content missing'})
         }
 
         const quiz = new Quiz({
             name,
-            questions,
-            highest_score
+            questions: questions.map(item => ({
+                question: item.question,
+                correct_answer: Number(item.correct_answer),
+                points: Number(item.points),
+                options: item.options.split(',')
+                })),
+            highest_score: questions.reduce((acc, item) => acc + Number(item.points), 0)
         })
 
         await quiz.save()
 
         response.status(HTTP_CODE.SUCCESS).send(quiz)
     } catch (e) {
-        response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: e })
+        response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({})
     }
 })
 

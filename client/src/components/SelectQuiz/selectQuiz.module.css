@@ -1,8 +1,12 @@
 .container {
     padding: 20px 40px 20px 40px;
+    display: flex;
+    flex-direction: column;
 
     .quiz_list {
-        display: flex
+        display: flex;
+        flex-direction: column;
+        
     }
 
     .quiz_button {

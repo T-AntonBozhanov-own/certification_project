@@ -4,6 +4,7 @@ import { ROUTES } from '../constants/apiRoutes'
 
 export const FETCH_ACTION = 'quiz/fetchQuizes'
 export const GET_RESULT_ACTION = 'quiz/getQuizResult'
+export const ADD_NEW_QUIZ_ACTION = 'quiz/addNewQuiz'
 
 export const getQuizes = createAsyncThunk(
   FETCH_ACTION,
@@ -31,6 +32,19 @@ export const getQuizResult = createAsyncThunk(
   },
 )
 
+export const addNewQuiz = createAsyncThunk(
+  ADD_NEW_QUIZ_ACTION,
+  async (data, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        ROUTES.QUIZ.ADD, data, { withCredentials: true })
+      return response.data
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.message })
+    }
+  },
+)
+
 const quizSlice = createSlice({
   name: 'quiz',
   initialState: {
@@ -39,7 +53,8 @@ const quizSlice = createSlice({
     activeQuiz: null,
     answers: [],
     quizResult: null,
-    isFetchingResult: true
+    isFetchingResult: true,
+    isQuestSubmitted: true
   },
   reducers: {
     selectQuiz(state, action) {
@@ -51,6 +66,9 @@ const quizSlice = createSlice({
     setBackToSelectQuizes(state) {
       state.answers = []
       state.activeQuiz = null
+      state.isQuestSubmitted = false,
+      state.quizResult = null,
+      state.isFetchingResult = true
     }
   },
   extraReducers: (builder) => {
@@ -77,6 +95,16 @@ const quizSlice = createSlice({
     builder.addCase(getQuizResult.rejected, (state, action) => {
       state.quizResult = null
       state.isFetchingResult = false
+    })
+    builder.addCase(addNewQuiz.fulfilled, (state, { payload }) => {
+      state.data = [
+        ...state.data,
+        payload
+      ]
+      state.isQuestSubmitted = true
+    })
+    builder.addCase(addNewQuiz.rejected, (state, action) => {
+      state.isQuestSubmitted = false
     })
   },
 })

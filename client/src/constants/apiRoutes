@@ -1,6 +1,7 @@
 export const ROUTES = {
     QUIZ: {
         _: '/api/quiz',
+        ADD: 'api/quiz/add'
     },
     USER: {
         _: '/api/user',
