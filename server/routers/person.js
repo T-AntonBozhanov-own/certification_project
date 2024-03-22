@@ -16,6 +16,7 @@ personRouter.get(PERSON_PATH, async (request, response) => {
         const persones = await Person.find({});
         response.json(persones)
     } catch (e) {
+        console.log(e)
         response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found' })
     }
 })
@@ -26,7 +27,7 @@ personRouter.get(PERSON_PATH, async (request, response) => {
  */
 personRouter.get(`${PERSON_PATH}/:id`, async (request, response) => {
     try {
-        const id = Number(request.params.id)
+        const id = request.params.id
         const person = await Person.findById(id);
 
         if (!person) {

@@ -21,7 +21,7 @@ describe('GET test', () => {
 
   beforeEach(function (done) {
     testSession.post('/api/login')
-      .send({ username: 'user1', password: '12345' })
+      .send({ username: 'user', password: '12345' })
       .expect(200)
       .end(function (err) {
         if (err) return done(err);
@@ -35,12 +35,12 @@ describe('GET test', () => {
     expect(res.body).toEqual({
           completedQuizes: [
              {
-               _id: "65f80722fbba913160e8f40c",
+               _id: "65fddfd3954edea561a40c3f",
                quizId: "65f7e425de64f32c6daa42ff",
                quizScore: 30,
              },
            ],
-           name: "user1",
+           name: "user",
     });
     })
 })

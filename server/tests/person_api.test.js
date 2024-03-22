@@ -22,7 +22,7 @@ describe('GET test', () => {
 
   beforeEach(function (done) {
     testSession.post('/api/login')
-      .send({ username: 'user1', password: '12345' })
+      .send({ username: 'user', password: '12345' })
       .expect(200)
       .end(function (err) {
         if (err) return done(err);
@@ -33,11 +33,19 @@ describe('GET test', () => {
 
   test('get person list', async () => {
     const res = await authenticatedSession.get(PERSON_PATH).expect(200);
-    expect(res.body).toEqual(quizData);
+    expect(res.body).toEqual([{
+          id: "65fd40be41e16c3b72fd8ac2",
+          user: "65fd40be41e16c3b72fd8ac0",
+          username: "user"
+    }]);
     })
   test('get person by name', async () => {
-      const res = await authenticatedSession.get(`${PERSON_PATH}/65f7e425de64f32c6daa42ff`).expect(200);
-      expect(res.body).toEqual(quizData[0]);
+      const res = await authenticatedSession.get(`${PERSON_PATH}/65fd40be41e16c3b72fd8ac2`).expect(200);
+      expect(res.body).toEqual({
+        id: "65fd40be41e16c3b72fd8ac2",
+        user: "65fd40be41e16c3b72fd8ac0",
+        username: "user"
+    });
     })  
 })
 

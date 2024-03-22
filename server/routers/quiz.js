@@ -46,7 +46,12 @@ quizRouter.get(`${QUIZ_PATH}/:id`, async (request, response) => {
 
         const responce = {
             name: quiz.name,
-            questions: quiz.questions,
+            questions: quiz.questions.map(item => ({
+                question: item.question,
+                options: item.options,
+                correct_answer: item.correct_answer,
+                points: item.points
+            })),
             highest_score: quiz.highest_score
         }
         response.json(responce)
