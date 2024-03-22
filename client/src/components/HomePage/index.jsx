@@ -4,7 +4,7 @@ import { Options } from "../Options"
 import style from './homePage.module.css'
 import {useSelector, useDispatch} from 'react-redux'
 import { useEffect } from "react"
-import {getQuizes, selectQuiz, setAnswer, setBackToSelectQuizes, getQuizResult} from '../../reducers/quizReducer'
+import {getQuizes, selectQuiz, setAnswer, setBackToSelectQuizes, getQuizResult, deleteQuiz} from '../../reducers/quizReducer'
 import { SelectQuiz } from "../SelectQuiz"
 import { useNavigate } from "react-router-dom";
 
@@ -52,7 +52,7 @@ export const HomePage = () => {
     }
 
     const handleRemoveQuiz = (name) => {
-        console.log('remove', id)
+        dispatch(deleteQuiz(name))
     }
   
     return quiz ? (<div className={style.container}>

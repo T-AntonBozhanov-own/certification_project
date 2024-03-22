@@ -125,21 +125,42 @@ quizRouter.put(`${QUIZ_PATH}/edit`, sessionChecker, async (request, response) =>
  * @receives a delete request to the URL: /api/quiz/:name
  * @responds with the http code
  */
-quizRouter.delete(`${QUIZ_PATH}/:name`, async (request, response) => {
+quizRouter.delete(`${QUIZ_PATH}/:name`, sessionChecker, async (request, response) => {
     try {
         const name = request.params.name
 
         const quizToDelete = await Quiz.findOne({name})
+        console.log('quizToDelete', quizToDelete)
 
         //Find all users which completed quiz to delete
-        const usersWithCompletedQuiz = await User.filter(user => user.completedQuizes.quizId === quizToDelete._id )
+        const usersWithCompletedQuiz = await User.find({
+            completedQuizes: { $all: [
+                { "$elemMatch" : { quizId: quizToDelete._id } },
+              ]}
+        })
 
-        // Remove this quiz id from this users
-        await Promise.all(usersWithCompletedQuiz.forEach(user => user.completedQuizes.filter(quizId => quizId !== quizToDelete._id )))
+        const names = usersWithCompletedQuiz.map(user => user.name)
+
+        console.log('usersWithCompletedQuiz', usersWithCompletedQuiz)
+
+        // // Remove this quiz id from this users
+        await User.updateMany(
+            {
+                completedQuizes: { $all: [
+                    { "$elemMatch" : { quizId: quizToDelete._id } },
+                  ]}
+            },
+            {'$pull': {
+                completedQuizes: { quizId: quizToDelete._id }
+              }}
+        ).exec()
+
+        
 
         await Quiz.deleteOne({name})
-        response.status(HTTP_CODE.NO_CONTENT).send()
+        response.status(HTTP_CODE.SUCCESS).send({name})
     } catch (e) {
+        console.log(e)
         response.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send({ error: 'resource not found' })
     }
 })
